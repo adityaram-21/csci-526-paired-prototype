@@ -7,6 +7,7 @@ public class Defender : MonoBehaviour
     [Header("Health Settings")]
     public float maxHealth = 100f;
     private float currentHealth;
+    private float damageTaken = 10f; // Damage taken from enemies
 
     [Header("Health Bar UI")]
     public HealthBar healthBarUI;
@@ -79,6 +80,16 @@ public class Defender : MonoBehaviour
         isZombieModeActive = false;
         transform.rotation = initialRotation; // Reset rotation
         spriteRenderer.color = Color.white; // Reset color to white
+
+        currentHealth = maxHealth; // Reset health
+        healthBarUI.SetHealth(currentHealth, maxHealth);
+        
+        if (damageTaken < 50f)
+        {
+            damageTaken += 5f; // Increase damage taken after Zombie Mode
+        }
+
+        Debug.Log("Defender's Zombie Mode has ended. Resetting to normal state.");
         StartCoroutine(ActivateImmunity());
     }
 
@@ -120,7 +131,7 @@ public class Defender : MonoBehaviour
                 return;
             }
 
-            TakeDamage(10f);
+            TakeDamage(damageTaken);
             Debug.Log("Defender hit by enemy!");
 
             Enemy enemy = other.GetComponent<Enemy>();

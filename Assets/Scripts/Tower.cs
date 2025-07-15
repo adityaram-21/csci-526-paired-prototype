@@ -21,7 +21,7 @@ public class Tower : MonoBehaviour
     {
 
     }
-    
+
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
@@ -40,5 +40,20 @@ public class Tower : MonoBehaviour
     void Die()
     {
         Destroy(gameObject);
+    }
+    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            TakeDamage(10f);
+            Debug.Log("Tower hit by enemy!");
+
+            Enemy enemy = other.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.ExplodeWithParticles();
+            }
+        }
     }
 }
