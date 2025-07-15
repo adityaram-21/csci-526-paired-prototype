@@ -13,8 +13,8 @@ public class Defender : MonoBehaviour
     public HealthBar healthBarUI;
 
     [Header("Zombie Mode Settings")]
-    public float zombieDuration = 5f;
-    public float immunityDuration = 3f;
+    public float zombieDuration = 3f;
+    public float immunityDuration = 4f;
     private bool isZombieModeActive = false;
     private bool isImmune = false;
     public GameObject projectilePrefab;
@@ -68,7 +68,7 @@ public class Defender : MonoBehaviour
         Debug.Log("Defender is now in Zombie Mode!");
 
         float elapsedTime = 0f;
-        float shootInterval = 1f;
+        float shootInterval = 1.5f;
 
         while (elapsedTime < zombieDuration)
         {
@@ -125,20 +125,26 @@ public class Defender : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            if (isImmune || isZombieModeActive)
+            if (isZombieModeActive)
             {
-                Debug.Log("Defender is immune or in Zombie Mode, cannot take damage from enemy!");
+                Debug.Log("Defender is in Zombie Mode, cannot take damage from enemy!");
                 return;
             }
-
-            TakeDamage(damageTaken);
-            Debug.Log("Defender hit by enemy!");
 
             Enemy enemy = other.GetComponent<Enemy>();
             if (enemy != null)
             {
                 enemy.ExplodeWithParticles();
             }
+
+            if (isImmune)
+            {
+                Debug.Log("Defender is immune, cannot take damage from enemy!");
+                return;
+            }
+
+            TakeDamage(damageTaken);
+            Debug.Log("Defender hit by enemy!");
         }
     }
 }

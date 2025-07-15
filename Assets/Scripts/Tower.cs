@@ -30,9 +30,8 @@ public class Tower : MonoBehaviour
     {
         currentHealth -= damage;
         Debug.Log("Tower took damage: " + damage);
-        Debug.Log("Current Health: " + currentHealth);
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        Debug.Log("Clamped Health: " + currentHealth);
+        Debug.Log("Current Health: " + currentHealth);
 
         healthBarUI.SetHealth(currentHealth, maxHealth);
         if (currentHealth <= 0)
