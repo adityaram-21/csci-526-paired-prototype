@@ -10,6 +10,10 @@ public class Tower : MonoBehaviour
 
     [Header("Health Bar UI")]
     public HealthBar healthBarUI;
+
+    [Header("Game Over Manager")]
+    public GameOverManager gameOverManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,13 +37,15 @@ public class Tower : MonoBehaviour
         healthBarUI.SetHealth(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
-            Die();
+            GameOver();
         }
     }
 
-    void Die()
+    void GameOver()
     {
-        Destroy(gameObject);
+        Destroy(gameObject); // Destroy the tower
+        Debug.Log("Tower has been destroyed!");
+        gameOverManager.TriggerGameOver();
     }
     
     void OnTriggerEnter2D(Collider2D other)
