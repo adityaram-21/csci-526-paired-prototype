@@ -855,6 +855,7 @@ GameObject:
   - component: {fileID: 837179293}
   - component: {fileID: 837179292}
   - component: {fileID: 837179294}
+  - component: {fileID: 837179295}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -909,6 +910,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   scoreText: {fileID: 863155128}
+--- !u!114 &837179295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837179291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a4006d073627478eba5b96e4630de5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameOverUI: {fileID: 2050602775}
 --- !u!1 &863155126
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,6 +1381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   healthBarUI: {fileID: 1721960369}
+  gameOverManager: {fileID: 837179295}
 --- !u!61 &1199590396
 BoxCollider2D:
   m_ObjectHideFlags: 0
