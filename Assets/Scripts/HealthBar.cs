@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DefenderHealthBar : MonoBehaviour
+public class HealthBar : MonoBehaviour
 {
     public RectTransform fillBar; // Assign the Fill image's RectTransform
     public Image fillImage;       // The Fill Image (for color change)
 
-    public float maxWidth = 75f; // Adjust based on your bar width in Canvas
+    public float maxWidth; // Adjust based on your bar width in Canvas
 
     public void SetHealth(float current, float max)
     {

@@ -7,6 +7,7 @@ TagManager:
   - Defender
   - Tower
   - Enemy
+  - Projectile
   layers:
   - Default
   - TransparentFX

@@ -1,5 +1,6 @@
 using System.Collections;
-using UnityEngine; // Assuming you have a HealthBar script in a namespace
+using UnityEngine;
+using UnityEngine.UI;
 
 public class Defender : MonoBehaviour
 {
@@ -8,40 +9,120 @@ public class Defender : MonoBehaviour
     private float currentHealth;
 
     [Header("Health Bar UI")]
-    public DefenderHealthBar healthBarUI;
+    public HealthBar healthBarUI;
+
+    [Header("Zombie Mode Settings")]
+    public float zombieDuration = 5f;
+    public float immunityDuration = 3f;
+    private bool isZombieModeActive = false;
+    private bool isImmune = false;
+    public GameObject projectilePrefab;
+    public SpriteRenderer spriteRenderer;
+
+    [Header("Tower Target")]
+    private Tower targetTower;
+
+    private Quaternion initialRotation;
 
     void Start()
     {
         currentHealth = maxHealth;
+        targetTower = FindObjectOfType<Tower>();
+        initialRotation = transform.rotation;
     }
 
     void TakeDamage(float damage)
     {
         currentHealth -= damage;
         Debug.Log("Defender took damage: " + damage);
-        Debug.Log("Current Health: " + currentHealth);
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        Debug.Log("Clamped Health: " + currentHealth);
+        Debug.Log("Current Health: " + currentHealth);
 
         healthBarUI.SetHealth(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
-            Die();
+            Zombify();
         }
     }
 
-    void Die()
+    void Zombify()
     {
-        Destroy(gameObject);
+        if (!isZombieModeActive)
+        {
+            StartCoroutine(ActivateZombieMode());
+        }
+        else
+        {
+            Debug.Log("Defender is already in Zombie Mode!");
+        }
+    }
+
+    IEnumerator ActivateZombieMode()
+    {
+        isZombieModeActive = true;
+
+        transform.rotation = initialRotation * Quaternion.Euler(0, 0, 180f); // Rotate defender to face the tower
+
+        spriteRenderer.color = new Color(0.5f, 0f, 0.5f, 1f); // Change color to purple
+        Debug.Log("Defender is now in Zombie Mode!");
+
+        float elapsedTime = 0f;
+        float shootInterval = 1f;
+
+        while (elapsedTime < zombieDuration)
+        {
+            shootAtTower();
+            yield return new WaitForSeconds(shootInterval);
+            elapsedTime += shootInterval;
+        }
+
+        isZombieModeActive = false;
+        transform.rotation = initialRotation; // Reset rotation
+        spriteRenderer.color = Color.white; // Reset color to white
+        StartCoroutine(ActivateImmunity());
+    }
+
+    void shootAtTower()
+    {
+        if (projectilePrefab != null && targetTower != null)
+        {
+            Vector3 direction = (targetTower.transform.position - transform.position).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.Euler(new Vector3(0, 0, angle + 90f));
+            GameObject projectile = Instantiate(projectilePrefab, transform.position, rotation);
+            projectile.GetComponent<Rigidbody2D>().velocity = direction * 4f; // Adjust speed as needed
+            Debug.Log("Defender shot a projectile at the tower!");
+        }
+        else
+        {
+            Debug.LogWarning("Projectile prefab or target tower is not set!");
+        }
+    }
+
+    IEnumerator ActivateImmunity()
+    {
+        isImmune = true;
+        Debug.Log("Defender is now immune for " + immunityDuration + " seconds!");
+
+        yield return new WaitForSeconds(immunityDuration);
+
+        isImmune = false;
+        Debug.Log("Defender's immunity has ended.");
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Enemy"))
         {
+            if (isImmune || isZombieModeActive)
+            {
+                Debug.Log("Defender is immune or in Zombie Mode, cannot take damage from enemy!");
+                return;
+            }
+
             TakeDamage(10f);
             Debug.Log("Defender hit by enemy!");
-            
+
             Enemy enemy = other.GetComponent<Enemy>();
             if (enemy != null)
             {
