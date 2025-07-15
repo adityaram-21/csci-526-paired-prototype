@@ -51,14 +51,13 @@ public class Tower : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            TakeDamage(10f);
-            Debug.Log("Tower hit by enemy!");
-
             Enemy enemy = other.GetComponent<Enemy>();
             if (enemy != null)
             {
                 enemy.ExplodeWithParticles();
             }
+            TakeDamage(10f);
+            Debug.Log("Tower hit by enemy!");  
         }
     }
 }
