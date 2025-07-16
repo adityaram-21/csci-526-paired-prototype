@@ -38,5 +38,10 @@ public class ClickHandler : MonoBehaviour
     {
         score += amount; // Update the score by the specified amount
         scoreText.text = "Score: " + score; // Update the score display
+
+        if(HealthManager.Instance != null)
+        {
+            HealthManager.Instance.AddScore(amount); // Add score to the HealthManager
+        }
     }
 }

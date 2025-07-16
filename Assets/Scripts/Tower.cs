@@ -26,6 +26,21 @@ public class Tower : MonoBehaviour
 
     }
 
+    public void healTower(float health)
+    {
+        if (health >= 100f)
+        {
+            Debug.LogWarning("Already at max health, cannot heal further.");
+            return; // Prevent healing above max health
+        }
+
+        currentHealth += health;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        healthBarUI.SetHealth(currentHealth, maxHealth);
+        Debug.Log("Tower healed by " + health + " points. Current Health: " + currentHealth);
+    }
+
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
