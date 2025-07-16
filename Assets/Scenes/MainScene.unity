@@ -1525,6 +1525,7 @@ GameObject:
   - component: {fileID: 837179294}
   - component: {fileID: 837179295}
   - component: {fileID: 837179296}
+  - component: {fileID: 837179297}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1606,6 +1607,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startCanvas: {fileID: 1927356002}
   gameWorld: {fileID: 54562816}
+--- !u!114 &837179297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837179291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb6301d434ca42a380c5da015cb1328, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tower: {fileID: 1199590395}
 --- !u!1 &863155126
 GameObject:
   m_ObjectHideFlags: 0
