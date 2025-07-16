@@ -19,6 +19,7 @@ public class Defender : MonoBehaviour
     private bool isImmune = false;
     public GameObject projectilePrefab;
     public SpriteRenderer spriteRenderer;
+    public GameObject immunityEffect;
 
     [Header("Tower Target")]
     private Tower targetTower;
@@ -113,11 +114,19 @@ public class Defender : MonoBehaviour
     IEnumerator ActivateImmunity()
     {
         isImmune = true;
-        Debug.Log("Defender is now immune for " + immunityDuration + " seconds!");
+        if (immunityEffect != null)
+        {
+            immunityEffect.SetActive(true);
+        }
 
+        Debug.Log("Defender is now immune for " + immunityDuration + " seconds!");
         yield return new WaitForSeconds(immunityDuration);
 
         isImmune = false;
+        if (immunityEffect != null)
+        {
+            immunityEffect.SetActive(false);
+        }
         Debug.Log("Defender's immunity has ended.");
     }
 
