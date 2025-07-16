@@ -28,7 +28,7 @@ public class Tower : MonoBehaviour
 
     public void healTower(float health)
     {
-        if (health >= 100f)
+        if (currentHealth >= 100f)
         {
             Debug.LogWarning("Already at max health, cannot heal further.");
             return; // Prevent healing above max health
@@ -71,7 +71,7 @@ public class Tower : MonoBehaviour
             {
                 enemy.ExplodeWithParticles();
             }
-            TakeDamage(10f);
+            TakeDamage(20f);
             Debug.Log("Tower hit by enemy!");  
         }
     }

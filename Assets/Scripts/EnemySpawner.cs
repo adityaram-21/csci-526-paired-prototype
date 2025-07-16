@@ -5,24 +5,31 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab; // Prefab of the enemy to spawn
-    public float spawnInterval = 2f; // Time interval between spawns
+    [Header("Enemy Spawner Settings")]
+    public GameObject enemyPrefab;
+    public float initialSpawnInterval = 2f;
+    public float spawnReductionStep = 0.2f;
+    public float minSpawnInterval = 0.8f;
+
+    [Header("Enemy Spawn Points")]
+    public List<Vector3> spawnPoints = new List<Vector3>();
+
+    private float spawnInterval; // The time interval between enemy spawns
     private float timer = 0f;
-    // Start is called before the first frame update
-    public Vector3[] spawnPoints; // Array of spawn points for the enemies
-    private float count = 0f;
+    private float spawnCount = 0f;
+    private bool extraSpawnPointsAdded = false;
 
-    private float score = 0f;
-
+    private int spawnAmount = 1;
 
     void Start()
     {
-        spawnPoints = new Vector3[] {
-            new Vector3(8.4f, 4.725f, 0f),
-            new Vector3(8.4f, -4.725f, 0f),
-            new Vector3(-8.4f, 4.725f, 0f),
-            new Vector3(-8.4f, -4.725f, 0f)
-        };
+        spawnInterval = initialSpawnInterval; // Initialize the spawn interval
+        
+        // Initialize the spawn points
+        spawnPoints.Add(new Vector3(8.4f, 4.725f, 0f));
+        spawnPoints.Add(new Vector3(8.4f, -4.725f, 0f));
+        spawnPoints.Add(new Vector3(-8.4f, 4.725f, 0f));
+        spawnPoints.Add(new Vector3(-8.4f, -4.725f, 0f));
     }
 
     // Update is called once per frame
@@ -32,43 +39,50 @@ public class EnemySpawner : MonoBehaviour
         if (timer >= spawnInterval) // Check if it's time to spawn a new enemy
         {
             SpawnEnemy(); // Call the method to spawn an enemy
+            adjustDifficulty();
             timer = 0f; // Reset the timer
-            count += 1;
-            score += 1;
+
+            spawnCount++;
         }
-        if (count == 12 && spawnInterval > 0.75f)
+    }
+
+    void adjustDifficulty()
+    {
+        if (spawnCount >= 8)
         {
-            count = 0;
-            spawnInterval -= 0.10f;
+            spawnCount = 0;
+
+            spawnInterval = Mathf.Max(minSpawnInterval, spawnInterval - spawnReductionStep);
+            Debug.Log("Spawn interval reduced to: " + spawnInterval);
         }
 
-        if (score > 20)
+        /*if (!extraSpawnPointsAdded && spawnInterval <= 1.5f)
         {
-            Vector3[] newPoints = new Vector3[] {
-                new Vector3(8.4f, 4.725f, 0f),
-                new Vector3(8.4f, -4.725f, 0f),
-                new Vector3(-8.4f, 4.725f, 0f),
-                new Vector3(-8.4f, -4.725f, 0f),
+            // Add extra spawn points to increase difficulty
+            spawnPoints.AddRange(new Vector3[] {
                 new Vector3(8.4f, 0f, 0f),
                 new Vector3(-8.4f, 0f, 0f),
                 new Vector3(0f, 4.725f, 0f),
-                new Vector3(0, -4.725f, 0f)
-            };
+                new Vector3(0f, -4.725f, 0f)
+            });
 
-            // Combine both arrays
-            spawnPoints = spawnPoints.Concat(newPoints).ToArray();
+            extraSpawnPointsAdded = true;
+            Debug.Log("Additional spawn points added.");
+        }*/
+
+        if (spawnInterval <= 1.2f)
+        {
+            spawnAmount = 2;
+            Debug.Log("Spawn amount increased to: " + spawnAmount);
         }
-
     }
 
     private void SpawnEnemy()
     {
-        Vector3 spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        Instantiate(enemyPrefab, spawnPoint, Quaternion.identity);
+        for (int i = 0; i < spawnAmount; i++)
+        {
+            Vector3 spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Count)];
+            Instantiate(enemyPrefab, spawnPoint, Quaternion.identity);
+        } 
     }
 }
-
-
-
-// If the player continues playing for 10 sec's the enemy spawn time should be redused so that the difficulty of the game increases
-// the time is 2secs it should be 1.75secs, then 1.5, 1.25, 1, 0.75, 0.5. it should not be less than 0.5 seconds, 

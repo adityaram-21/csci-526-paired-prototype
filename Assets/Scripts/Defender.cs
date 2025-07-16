@@ -7,7 +7,7 @@ public class Defender : MonoBehaviour
     [Header("Health Settings")]
     public float maxHealth = 100f;
     private float currentHealth;
-    private float damageTaken = 10f; // Damage taken from enemies
+    private float damageTaken = 20f; // Damage taken from enemies
 
     [Header("Health Bar UI")]
     public HealthBar healthBarUI;
@@ -23,14 +23,29 @@ public class Defender : MonoBehaviour
 
     [Header("Tower Target")]
     private Tower targetTower;
-
     private Quaternion initialRotation;
+
+    [Header("Defender Swap Settings")]
+    public bool isSelected = false;
 
     void Start()
     {
         currentHealth = maxHealth;
         targetTower = FindObjectOfType<Tower>();
         initialRotation = transform.rotation;
+    }
+
+    void changeDamageTaken()
+    {
+        switch (damageTaken)
+        {
+            case 20:
+                damageTaken = 25f;
+                break;
+            case 25:
+                damageTaken = 50f;
+                break;
+        }
     }
 
     void TakeDamage(float damage)
@@ -85,10 +100,7 @@ public class Defender : MonoBehaviour
         currentHealth = maxHealth; // Reset health
         healthBarUI.SetHealth(currentHealth, maxHealth);
         
-        if (damageTaken < 50f)
-        {
-            damageTaken += 5f; // Increase damage taken after Zombie Mode
-        }
+        changeDamageTaken(); // Change damage taken for next zombie mode
 
         Debug.Log("Defender's Zombie Mode has ended. Resetting to normal state.");
         StartCoroutine(ActivateImmunity());
@@ -128,6 +140,33 @@ public class Defender : MonoBehaviour
             immunityEffect.SetActive(false);
         }
         Debug.Log("Defender's immunity has ended.");
+    }
+
+    public void selectDefender()
+    {
+        isSelected = true;
+        Debug.Log("Defender selected.");
+        // Yellow highlight to indicate selection
+        spriteRenderer.color = Color.yellow;
+    }
+
+    public void deselectDefender()
+    {
+        isSelected = false;
+        Debug.Log("Defender deselected.");
+        // Remove the highlight
+        spriteRenderer.color = Color.white;
+    }
+
+    public float getCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(float health)
+    {
+        currentHealth = health;
+        healthBarUI.SetHealth(currentHealth, maxHealth);
     }
 
     void OnTriggerEnter2D(Collider2D other)
